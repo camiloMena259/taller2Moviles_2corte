@@ -9,6 +9,9 @@ import 'package:registro_clases/views/paso_parametros/detalle_screen.dart';
 import 'package:registro_clases/views/paso_parametros/paso_parametros_screen.dart';
 
 import '../views/auth/login_page.dart';
+import '../views/auth/login_view.dart';
+import '../views/auth/register_view.dart';
+import '../views/auth/evidence_view.dart';
 import '../views/future/future_view.dart';
 import '../views/isolate/isolate_view.dart';
 import '../views/pokemons/pokemon_detail_view.dart';
@@ -102,7 +105,23 @@ final GoRouter appRouter = GoRouter(
       path: '/establecimientos/create',
       builder: (context, state) => const EstablecimientoCreateView(),
     ),
-    //!Ruta para login
-    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+    //!Ruta para login (página anterior)
+    GoRoute(path: '/login_old', builder: (context, state) => const LoginPage()),
+    //!Rutas para el Taller JWT
+    GoRoute(
+      path: '/login',
+      name: 'login',
+      builder: (context, state) => const LoginView(),
+    ),
+    GoRoute(
+      path: '/register',
+      name: 'register',
+      builder: (context, state) => const RegisterView(),
+    ),
+    GoRoute(
+      path: '/evidence',
+      name: 'evidence',
+      builder: (context, state) => const EvidenceView(),
+    ),
   ],
 );
