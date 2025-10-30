@@ -8,6 +8,7 @@ import '../models/parking_user.dart';
 enum AuthState { idle, loading, success, error }
 
 class ParkingAuthService extends ChangeNotifier {
+  // API de parking.visiontic.com.co - API real del taller
   final String baseUrl = 'https://parking.visiontic.com.co/api';
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
@@ -30,7 +31,7 @@ class ParkingAuthService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Registrar un nuevo usuario
+  /// Registrar un nuevo usuario usando POST /api/users
   Future<Map<String, dynamic>> register({
     required String name,
     required String email,
@@ -40,9 +41,15 @@ class ParkingAuthService extends ChangeNotifier {
     _setState(AuthState.loading);
 
     try {
+      debugPrint('🔵 Intentando registro en: $baseUrl/users');
+      debugPrint('📧 Email: $email');
+      
       final response = await http.post(
-        Uri.parse('$baseUrl/register'),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('$baseUrl/users'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
         body: jsonEncode({
           'name': name,
           'email': email,
@@ -51,30 +58,79 @@ class ParkingAuthService extends ChangeNotifier {
         }),
       );
 
-      final data = jsonDecode(response.body);
+      debugPrint('📊 Status Code: ${response.statusCode}');
+      debugPrint('📄 Response Body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        
+        // Extraer datos del usuario creado
+        final userData = data['data'] ?? data['user'] ?? data;
+        final userId = userData['id'] ?? 0;
+        final userName = userData['name'] ?? name;
+        final userEmail = userData['email'] ?? email;
+        
+        // Si la API devuelve token en el registro, guardarlo
+        if (data['token'] != null) {
+          await _secureStorage.write(key: 'access_token', value: data['token']);
+        }
+        
+        // Guardar datos de usuario en SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user_name', userName);
+        await prefs.setString('user_email', userEmail);
+        await prefs.setInt('user_id', userId);
+        await prefs.setBool('is_logged_in', false); // Aún no ha iniciado sesión
+        
         _setState(AuthState.success);
+        debugPrint('✅ Registro exitoso - User ID: $userId');
         return {
           'success': true,
           'message': 'Usuario registrado exitosamente',
-          'data': data
+          'data': userData
         };
       } else {
-        _setError(data['message'] ?? 'Error al registrar usuario');
+        // Manejo detallado de errores
+        final data = jsonDecode(response.body);
+        String errorMsg = 'Error al registrar usuario';
+        
+        if (response.statusCode == 422) {
+          // Error de validación
+          if (data['errors'] != null) {
+            final errors = data['errors'] as Map<String, dynamic>;
+            final errorMessages = <String>[];
+            errors.forEach((key, value) {
+              if (value is List) {
+                errorMessages.addAll(value.map((e) => e.toString()));
+              }
+            });
+            errorMsg = errorMessages.join('\n');
+          } else {
+            errorMsg = data['message'] ?? 'Datos inválidos';
+          }
+        } else if (response.statusCode == 409) {
+          errorMsg = 'El email ya está registrado. Intenta con otro email.';
+        } else if (response.statusCode == 400) {
+          errorMsg = data['message'] ?? 'Solicitud incorrecta';
+        } else {
+          errorMsg = data['message'] ?? data['error'] ?? 'Error al registrar usuario';
+        }
+        
+        _setError(errorMsg);
+        debugPrint('❌ Error de registro: $errorMsg');
         return {
           'success': false,
-          'message': data['message'] ?? 'Error al registrar usuario'
+          'message': errorMsg
         };
       }
     } catch (e) {
       _setError('Error de conexión: $e');
-      debugPrint('Error en register: $e');
+      debugPrint('❌ Error en register: $e');
       return {'success': false, 'message': 'Error de conexión: $e'};
     }
   }
 
-  /// Login de usuario
+  /// Login de usuario usando POST /api/login
   Future<Map<String, dynamic>> login({
     required String email,
     required String password,
@@ -82,57 +138,111 @@ class ParkingAuthService extends ChangeNotifier {
     _setState(AuthState.loading);
 
     try {
+      debugPrint('🔵 Intentando login en: $baseUrl/login');
+      debugPrint('📧 Email: $email');
+      
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
         body: jsonEncode({
           'email': email,
           'password': password,
         }),
       );
 
-      final data = jsonDecode(response.body);
+      debugPrint('📊 Status Code: ${response.statusCode}');
+      debugPrint('📄 Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
-        // Guardar token de forma segura
-        await _secureStorage.write(
-          key: 'access_token',
-          value: data['access_token'],
-        );
-
-        if (data['refresh_token'] != null) {
-          await _secureStorage.write(
-            key: 'refresh_token',
-            value: data['refresh_token'],
-          );
+        final data = jsonDecode(response.body);
+        
+        // Extraer token (puede venir como 'token', 'access_token', etc.)
+        final token = data['token'] ?? data['access_token'] ?? '';
+        final refreshToken = data['refresh_token'] ?? '';
+        
+        if (token.isEmpty) {
+          _setError('No se recibió token de autenticación');
+          return {
+            'success': false,
+            'message': 'No se recibió token de autenticación'
+          };
+        }
+        
+        // Guardar tokens de forma segura
+        await _secureStorage.write(key: 'access_token', value: token);
+        if (refreshToken.isNotEmpty) {
+          await _secureStorage.write(key: 'refresh_token', value: refreshToken);
         }
 
-        // Guardar datos no sensibles del usuario
+        // Extraer datos del usuario
+        final userData = data['user'] ?? data['data'] ?? {};
+        final userName = userData['name'] ?? email.split('@')[0];
+        final userEmail = userData['email'] ?? email;
+        final userId = userData['id'] ?? 0;
+        
+        // Guardar datos no sensibles
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('user_name', data['user']['name'] ?? '');
-        await prefs.setString('user_email', data['user']['email'] ?? '');
-        await prefs.setInt('user_id', data['user']['id'] ?? 0);
+        await prefs.setString('user_name', userName);
+        await prefs.setString('user_email', userEmail);
+        await prefs.setInt('user_id', userId);
         await prefs.setBool('is_logged_in', true);
 
         // Crear objeto de usuario
-        _currentUser = ParkingUser.fromJson(data['user']);
+        _currentUser = ParkingUser(
+          id: userId,
+          name: userName,
+          email: userEmail,
+        );
 
         _setState(AuthState.success);
+        debugPrint('✅ Login exitoso - Token: ${token.substring(0, token.length > 20 ? 20 : token.length)}...');
         return {
           'success': true,
           'message': 'Login exitoso',
           'user': _currentUser
         };
       } else {
-        _setError(data['message'] ?? 'Credenciales inválidas');
+        // Manejo detallado de errores
+        final data = jsonDecode(response.body);
+        String errorMsg = 'Error al iniciar sesión';
+        
+        if (response.statusCode == 401) {
+          errorMsg = 'Credenciales incorrectas. Verifica tu email y contraseña.';
+        } else if (response.statusCode == 422) {
+          // Error de validación
+          if (data['errors'] != null) {
+            final errors = data['errors'] as Map<String, dynamic>;
+            final errorMessages = <String>[];
+            errors.forEach((key, value) {
+              if (value is List) {
+                errorMessages.addAll(value.map((e) => e.toString()));
+              }
+            });
+            errorMsg = errorMessages.join('\n');
+          } else {
+            errorMsg = data['message'] ?? 'Datos inválidos';
+          }
+        } else if (response.statusCode == 404) {
+          errorMsg = 'Usuario no encontrado.';
+        } else if (response.statusCode == 403) {
+          errorMsg = 'Cuenta no verificada o bloqueada.';
+        } else {
+          errorMsg = data['message'] ?? data['error'] ?? 'Error al iniciar sesión';
+        }
+        
+        _setError(errorMsg);
+        debugPrint('❌ Error de login: $errorMsg');
         return {
           'success': false,
-          'message': data['message'] ?? 'Credenciales inválidas'
+          'message': errorMsg
         };
       }
     } catch (e) {
       _setError('Error de conexión: $e');
-      debugPrint('Error en login: $e');
+      debugPrint('❌ Error en login: $e');
       return {'success': false, 'message': 'Error de conexión: $e'};
     }
   }

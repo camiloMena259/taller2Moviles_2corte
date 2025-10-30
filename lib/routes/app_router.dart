@@ -11,17 +11,34 @@ import 'package:registro_clases/views/paso_parametros/paso_parametros_screen.dar
 import '../views/auth/login_page.dart';
 import '../views/auth/login_view.dart';
 import '../views/auth/register_view.dart';
-import '../views/auth/evidence_view.dart';
+import '../views/home/user_info_view.dart';
 import '../views/future/future_view.dart';
 import '../views/isolate/isolate_view.dart';
 import '../views/pokemons/pokemon_detail_view.dart';
 import '../views/pokemons/pokemon_list_view.dart';
 
 final GoRouter appRouter = GoRouter(
+  initialLocation: '/login', // ✅ INICIO en Login
   routes: [
+    // ✅ Ruta principal - HomeScreen original (Dashboard)
     GoRoute(
       path: '/',
-      builder: (context, state) => const HomeScreen(), // Usa HomeView
+      builder: (context, state) => const HomeScreen(),
+    ),
+    // ✅ Ruta de Login como pantalla inicial
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginView(),
+    ),
+    // Ruta de Registro
+    GoRoute(
+      path: '/register',
+      builder: (context, state) => const RegisterView(),
+    ),
+    // ✅ Ruta para ver información detallada del usuario (desde el drawer)
+    GoRoute(
+      path: '/user-info',
+      builder: (context, state) => const UserInfoView(),
     ),
     // Rutas para el paso de parámetros
     GoRoute(
@@ -105,23 +122,10 @@ final GoRouter appRouter = GoRouter(
       path: '/establecimientos/create',
       builder: (context, state) => const EstablecimientoCreateView(),
     ),
-    //!Ruta para login (página anterior)
-    GoRoute(path: '/login_old', builder: (context, state) => const LoginPage()),
-    //!Rutas para el Taller JWT
+    //!Ruta para login (página anterior del taller 1)
     GoRoute(
-      path: '/login',
-      name: 'login',
-      builder: (context, state) => const LoginView(),
-    ),
-    GoRoute(
-      path: '/register',
-      name: 'register',
-      builder: (context, state) => const RegisterView(),
-    ),
-    GoRoute(
-      path: '/evidence',
-      name: 'evidence',
-      builder: (context, state) => const EvidenceView(),
+      path: '/login_old',
+      builder: (context, state) => const LoginPage(),
     ),
   ],
 );

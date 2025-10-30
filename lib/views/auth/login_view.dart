@@ -42,7 +42,7 @@ class _LoginViewState extends State<LoginView> {
           backgroundColor: Colors.green,
         ),
       );
-      context.go('/evidence');
+      context.go('/'); // ✅ Navegar al HomeScreen original (Dashboard principal)
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -85,12 +85,38 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Taller JWT - Parking API',
+                    'Taller JWT - API: parking.visiontic.com.co',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
                     ),
                     textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.green.shade200),
+                    ),
+                    child: Column(
+                      children: const [
+                        Text(
+                          '✅ Login con API Real',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Divider(height: 8),
+                        Text(
+                          'Usa el email y contraseña con los que te registraste',
+                          style: TextStyle(fontSize: 11),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 32),
                   TextFormField(
@@ -98,6 +124,7 @@ class _LoginViewState extends State<LoginView> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       labelText: 'Correo electrónico',
+                      hintText: 'ejemplo@email.com',
                       prefixIcon: Icon(Icons.email),
                       border: OutlineInputBorder(),
                     ),

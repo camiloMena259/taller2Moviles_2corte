@@ -298,7 +298,7 @@ class _EvidenceViewState extends State<EvidenceView> {
                               ),
                               const SizedBox(height: 12),
                               const Text('• API: parking.visiontic.com.co'),
-                              const Text('• Autenticación: JWT'),
+                              const Text('• Autenticación: JWT real'),
                               const Text('• SharedPreferences: datos no sensibles'),
                               const Text('• SecureStorage: tokens encriptados'),
                             ],

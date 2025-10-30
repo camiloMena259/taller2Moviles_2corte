@@ -95,6 +95,36 @@ class _RegisterViewState extends State<RegisterView> {
                     style: TextStyle(color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue.shade200),
+                    ),
+                    child: Column(
+                      children: const [
+                        Text(
+                          '✅ Registro con API Real',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          'El usuario se creará en la API',
+                          style: TextStyle(fontSize: 11),
+                        ),
+                        Text(
+                          'Recuerda tu email y contraseña para el login',
+                          style: TextStyle(fontSize: 11),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 32),
                   TextFormField(
                     controller: _nameController,
@@ -215,6 +245,29 @@ class _RegisterViewState extends State<RegisterView> {
                     onPressed: () => context.go('/login'),
                     child: const Text('¿Ya tienes cuenta? Inicia sesión'),
                   ),
+                  const SizedBox(height: 8),
+                  // ✅ Mensaje de error visible en pantalla
+                  if (authService.state == AuthState.error)
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.red.shade300),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.error_outline, color: Colors.red.shade700),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              authService.errorMessage,
+                              style: TextStyle(color: Colors.red.shade700),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                 ],
               ),
             ),

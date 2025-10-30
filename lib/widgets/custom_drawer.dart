@@ -118,12 +118,15 @@ class CustomDrawer extends StatelessWidget {
               context.go('/establecimientos');
             },
           ),
-          //!LOGIN
+          const Divider(),
+          //!INFORMACIÓN DE USUARIO (Taller JWT)
           ListTile(
-            leading: const Icon(Icons.login),
-            title: const Text('Login'),
+            leading: const Icon(Icons.account_circle),
+            title: const Text('Información de Usuario'),
+            subtitle: const Text('Ver datos almacenados'),
             onTap: () {
-              context.go('/login');
+              context.go('/user-info');
+              Navigator.pop(context); // Cierra el drawer
             },
           ),
         ],
