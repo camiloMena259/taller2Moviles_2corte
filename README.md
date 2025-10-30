@@ -158,11 +158,6 @@ lib/
 7. **Navegación**: Rutas declarativas con GoRouter
 8. **Seguridad Móvil**: Encriptación de datos sensibles
 
-## 📖 Documentación Adicional
-
-- 📄 [TALLER_JWT_README.md](./TALLER_JWT_README.md) - Instrucciones detalladas del taller
-- 📸 [GUIA_PDF_EVIDENCIAS.md](./GUIA_PDF_EVIDENCIAS.md) - Guía para generar PDF de evidencias
-
 ## 🚀 Getting Started
 
 ### Prerrequisitos
