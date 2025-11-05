@@ -7,6 +7,8 @@ import 'package:registro_clases/views/establecimientos/establecimientos_list_vie
 import 'package:registro_clases/views/home/home_screen.dart';
 import 'package:registro_clases/views/paso_parametros/detalle_screen.dart';
 import 'package:registro_clases/views/paso_parametros/paso_parametros_screen.dart';
+import 'package:registro_clases/views/universidades/universidad_form_view.dart';
+import 'package:registro_clases/views/universidades/universidades_list_view.dart';
 
 import '../views/auth/login_page.dart';
 import '../views/auth/login_view.dart';
@@ -18,7 +20,8 @@ import '../views/pokemons/pokemon_detail_view.dart';
 import '../views/pokemons/pokemon_list_view.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: '/login', // ✅ INICIO en Login
+  initialLocation: '/universidades', // 🎓 INICIO TEMPORAL en Universidades (Taller 3)
+  // initialLocation: '/login', // ✅ INICIO en Login (comentado temporalmente)
   routes: [
     // ✅ Ruta principal - HomeScreen original (Dashboard)
     GoRoute(
@@ -126,6 +129,25 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/login_old',
       builder: (context, state) => const LoginPage(),
+    ),
+    //!Rutas para Universidades (Taller 3 - Firebase)
+    GoRoute(
+      path: '/universidades',
+      name: 'universidades',
+      builder: (context, state) => const UniversidadesListView(),
+    ),
+    //!Ruta para crear una nueva universidad
+    GoRoute(
+      path: '/universidades/create',
+      builder: (context, state) => const UniversidadFormView(),
+    ),
+    //!Ruta para editar una universidad
+    GoRoute(
+      path: '/universidades/edit/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return UniversidadFormView(universidadId: id);
+      },
     ),
   ],
 );

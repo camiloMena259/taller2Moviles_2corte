@@ -1,215 +1,504 @@
-# 📱 Taller JWT - Aplicación Móvil Flutter
+# 📱 Proyecto Flutter - Desarrollo Móvil UCEVA
 
 ## 🎯 Descripción del Proyecto
 
-Este proyecto es una aplicación Flutter desarrollada como parte del **Taller de Autenticación JWT** del curso de Desarrollo Móvil. La aplicación implementa un sistema completo de autenticación utilizando JSON Web Tokens (JWT) conectándose a una API REST real.
+Este repositorio contiene el desarrollo de los talleres del curso de Desarrollo de Aplicaciones Móviles de UCEVA. Incluye implementaciones de autenticación JWT, integración con Firebase Realtime Database, y diversas funcionalidades móviles usando Flutter.
 
-## 🚀 ¿Qué se implementó?
+---
 
-### 1. **Autenticación JWT Completa**
-- ✅ **Registro de usuarios** mediante API REST (`POST /api/users`)
-- ✅ **Login con credenciales** que retorna un token JWT (`POST /api/login`)
-- ✅ **Logout** que limpia todos los datos almacenados localmente
-- ✅ Validación de formularios con manejo de errores en tiempo real
-- ✅ Manejo de excepciones específicas por código HTTP (401, 422, 409, 404, 403)
+## 📚 Talleres Implementados
 
-### 2. **Gestión de Estado con Provider**
-- ✅ Implementación de `ChangeNotifier` para manejo reactivo del estado
-- ✅ Estados: `idle`, `loading`, `success`, `error`
-- ✅ Notificaciones automáticas a la UI cuando cambia el estado de autenticación
+### 🔐 Taller 2: Autenticación JWT
+Sistema completo de autenticación con tokens JWT, almacenamiento seguro y gestión de estado.
 
-### 3. **Almacenamiento Local Seguro**
-- ✅ **SharedPreferences**: Datos no sensibles (nombre, email, ID de usuario)
-- ✅ **FlutterSecureStorage**: Datos sensibles encriptados (tokens JWT)
-- ✅ Diferenciación clara entre tipos de almacenamiento
-- ✅ Uso de Keychain (iOS) y Keystore (Android) para encriptación nativa
+### 🔥 Taller 3: Integración con Firebase (ACTUAL)
+Módulo de gestión de universidades con Firebase Realtime Database, operaciones CRUD y sincronización en tiempo real.
 
-### 4. **Arquitectura Limpia**
+---
+
+## 🔥 TALLER 3: Firebase Realtime Database
+
+### 🎯 Objetivo
+Desarrollar un módulo en Flutter que integre Firebase Realtime Database para gestionar una colección de universidades con operaciones CRUD completas y sincronización en tiempo real.
+
+### ✨ Características Implementadas
+
+#### 1. **Integración con Firebase**
+- ✅ Configuración completa de Firebase usando FlutterFire CLI
+- ✅ Firebase Realtime Database habilitado (sin necesidad de billing)
+- ✅ Archivo `firebase_options.dart` generado automáticamente
+- ✅ Inicialización de Firebase en la aplicación
+- ✅ Conexión exitosa y persistente
+
+#### 2. **Modelo de Datos - Universidad**
+```dart
+Universidad {
+  - id: String?
+  - nit: String
+  - nombre: String
+  - direccion: String
+  - telefono: String
+  - paginaWeb: String
+}
+```
+
+#### 3. **Operaciones CRUD Completas**
+
+##### **CREATE** - Crear Universidad
+- ✅ Formulario con validaciones
+- ✅ Campos: NIT, Nombre, Dirección, Teléfono, Página Web
+- ✅ Validación de campos obligatorios
+- ✅ Validación de formato de URL
+- ✅ Verificación de NIT duplicado
+- ✅ Guardado en Firebase Realtime Database
+- ✅ Confirmación visual con SnackBar
+
+##### **READ** - Listar Universidades
+- ✅ Stream en tiempo real desde Firebase
+- ✅ Actualización automática al agregar/editar/eliminar
+- ✅ Diseño con Cards Material Design
+- ✅ Estados: loading, error, empty state
+- ✅ Banner de estado de conexión
+- ✅ Información completa de cada universidad
+
+##### **UPDATE** - Actualizar Universidad
+- ✅ Carga de datos existentes en formulario
+- ✅ Edición de todos los campos
+- ✅ Validaciones en modo edición
+- ✅ Actualización en Firebase
+- ✅ Sincronización inmediata en la lista
+
+##### **DELETE** - Eliminar Universidad
+- ✅ Diálogo de confirmación
+- ✅ Eliminación de Firebase
+- ✅ Actualización automática de la lista
+- ✅ Mensaje de confirmación
+
+#### 4. **Funcionalidades Adicionales**
+- ✅ **Llamar teléfono:** Integración con `url_launcher` para realizar llamadas
+- ✅ **Abrir página web:** Apertura de URLs en navegador externo
+- ✅ **Navegación fluida:** GoRouter para rutas declarativas
+- ✅ **Modo desarrollo:** Posibilidad de trabajar sin login
+- ✅ **Servicio Mock:** Para desarrollo offline (opcional)
+
+#### 5. **Arquitectura del Módulo**
 ```
 lib/
-├── models/              # Modelos de datos (ParkingUser)
-├── services/            # Lógica de negocio (ParkingAuthService)
-├── views/               # Interfaces de usuario
-│   ├── auth/           # Vistas de autenticación (Login, Registro)
-│   └── home/           # Dashboard y vistas principales
-├── widgets/            # Componentes reutilizables (CustomDrawer)
-└── routes/             # Configuración de navegación (GoRouter)
-```
-
-### 5. **Integración con API Real**
-- 🌐 **API Base**: `https://parking.visiontic.com.co/api`
-- 📡 **Endpoints utilizados**:
-  - `POST /api/users` - Registro de usuarios
-  - `POST /api/login` - Autenticación con JWT
-- 🔒 Headers requeridos: `Content-Type: application/json`, `Accept: application/json`
-
-### 6. **Experiencia de Usuario**
-- ✅ Flujo de navegación intuitivo: Login → Dashboard → Información de Usuario
-- ✅ Mensajes de error claros y visibles en pantalla
-- ✅ Feedback visual con SnackBars y banners de error
-- ✅ Confirmación de acciones críticas (logout)
-- ✅ Menú lateral (Drawer) con todas las funcionalidades de la app
-- ✅ Vista detallada de información almacenada localmente
-
-## 📋 Características Principales
-
-| Característica | Descripción |
-|----------------|-------------|
-| **Autenticación JWT** | Sistema completo de registro, login y logout |
-| **Manejo de Errores** | Validación en tiempo real con mensajes específicos |
-| **Almacenamiento Dual** | SharedPreferences + SecureStorage |
-| **Estado Reactivo** | Provider para actualización automática de UI |
-| **Navegación** | GoRouter para rutas declarativas |
-| **API REST** | Integración con backend real |
-| **Seguridad** | Encriptación de tokens con Keychain/Keystore |
-
-## 🛠️ Tecnologías Utilizadas
-
-- **Flutter** `^3.9.0` - Framework de desarrollo móvil
-- **Dart** - Lenguaje de programación
-- **Provider** `^6.1.5` - Gestión de estado
-- **GoRouter** `^16.2.1` - Navegación declarativa
-- **HTTP** `^1.5.0` - Cliente HTTP para API REST
-- **SharedPreferences** `^2.5.3` - Almacenamiento local simple
-- **FlutterSecureStorage** `^9.2.4` - Almacenamiento encriptado
-
-## 📱 Flujo de la Aplicación
-
-```
-1. Inicio → Pantalla de Login
-   ↓
-2. Usuario puede:
-   - Iniciar sesión (si ya tiene cuenta)
-   - Registrarse (crear nueva cuenta)
-   ↓
-3. Login exitoso → Dashboard Principal
-   - Muestra información del usuario autenticado
-   - Botón de logout en AppBar
-   - Menú lateral con opciones:
-     * Pokemons, CDTs, Establecimientos, etc.
-     * Información de Usuario (detallada)
-   ↓
-4. Información de Usuario
-   - Muestra datos de SharedPreferences
-   - Muestra datos de SecureStorage (tokens)
-   - Explicación educativa de los tipos de almacenamiento
-   ↓
-5. Logout → Vuelve a Login
-   - Limpia todos los datos locales
-   - Requiere confirmación del usuario
-```
-
-## 🔒 Seguridad Implementada
-
-### Datos No Sensibles (SharedPreferences)
-- ✅ Nombre de usuario
-- ✅ Email
-- ✅ ID de usuario
-- ✅ Estado de sesión (`is_logged_in`)
-
-### Datos Sensibles (FlutterSecureStorage)
-- 🔐 Access Token (JWT)
-- 🔐 Refresh Token (si aplica)
-- 🔐 Encriptación automática por el SO
-
-## 🧪 Manejo de Errores
-
-| Código | Error | Manejo en la App |
-|--------|-------|------------------|
-| **200** | OK | Login exitoso, navega al dashboard |
-| **201** | Created | Registro exitoso, navega al login |
-| **400** | Bad Request | Muestra mensaje de solicitud incorrecta |
-| **401** | Unauthorized | "Credenciales incorrectas" |
-| **403** | Forbidden | "Cuenta no verificada o bloqueada" |
-| **404** | Not Found | "Usuario no encontrado" |
-| **409** | Conflict | "El email ya está registrado" |
-| **422** | Validation Error | Muestra errores específicos del campo |
-
-## 📂 Estructura del Proyecto
-
-```
-lib/
-├── main.dart                           # Punto de entrada, configuración Provider
+├── config/
+│   └── dev_config.dart                    # Configuración de desarrollo
 ├── models/
-│   └── parking_user.dart              # Modelo de usuario
+│   └── universidad.dart                   # Modelo de datos
 ├── services/
-│   └── parking_auth_service.dart      # Servicio de autenticación JWT
+│   ├── universidad_realtime_service.dart  # Servicio Firebase Realtime DB
+│   └── universidad_mock_service.dart      # Servicio Mock (desarrollo)
 ├── views/
-│   ├── auth/
-│   │   ├── login_view.dart           # Pantalla de login
-│   │   └── register_view.dart        # Pantalla de registro
-│   └── home/
-│       ├── home_screen.dart          # Dashboard principal
-│       └── user_info_view.dart       # Información detallada de usuario
-├── widgets/
-│   └── custom_drawer.dart            # Menú lateral personalizado
-└── routes/
-    └── app_router.dart               # Configuración de rutas
+│   └── universidades/
+│       ├── universidades_list_view.dart   # Vista de lista
+│       └── universidad_form_view.dart     # Formulario CRUD
+└── firebase_options.dart                  # Configuración de Firebase
 ```
 
-## 🎓 Conceptos Aprendidos
+### 🔥 Firebase Realtime Database vs Firestore
 
-1. **Autenticación JWT**: Implementación completa de flujo de autenticación
-2. **Gestión de Estado**: Uso de Provider y ChangeNotifier
-3. **Almacenamiento Local**: Diferencias entre SharedPreferences y SecureStorage
-4. **API REST**: Consumo de endpoints con HTTP
-5. **Manejo de Errores**: Validación y feedback al usuario
-6. **Arquitectura Limpia**: Separación de responsabilidades
-7. **Navegación**: Rutas declarativas con GoRouter
-8. **Seguridad Móvil**: Encriptación de datos sensibles
+**¿Por qué Realtime Database?**
 
-## 📖 Documentación Adicional
+Durante el desarrollo se intentó usar Cloud Firestore, pero Google requiere habilitar facturación (billing) incluso para el plan gratuito, lo que implica vincular una tarjeta de crédito/débito. 
 
-- 📄 [TALLER_JWT_README.md](./TALLER_JWT_README.md) - Instrucciones detalladas del taller
-- 📸 [GUIA_PDF_EVIDENCIAS.md](./GUIA_PDF_EVIDENCIAS.md) - Guía para generar PDF de evidencias
+**Solución:** Se utilizó **Firebase Realtime Database** que ofrece:
+- ✅ **100% GRATIS** - Sin necesidad de tarjeta
+- ✅ **Sincronización en tiempo real** - Igual que Firestore
+- ✅ **1GB de almacenamiento** - Plan gratuito generoso
+- ✅ **10GB de transferencia/mes** - Suficiente para desarrollo
+- ✅ **Cumple todos los requisitos del taller**
 
-## 🚀 Getting Started
+### 📊 Estructura de Datos en Firebase
+
+```json
+{
+  "universidades": {
+    "-O7XnPqR3JKlMm9nP8qS": {
+      "nit": "890.123.456-7",
+      "nombre": "UCEVA",
+      "direccion": "Cra 27A #48-144, Tuluá - Valle",
+      "telefono": "+57 602 2242202",
+      "pagina_web": "https://www.uceva.edu.co"
+    }
+  }
+}
+```
+
+### 🎨 Interfaz de Usuario
+
+- ✅ **Material Design 3**
+- ✅ **Cards con elevación** para cada universidad
+- ✅ **ExpansionTile** para detalles expandibles
+- ✅ **Iconos descriptivos** para cada acción
+- ✅ **Colores temáticos** consistentes
+- ✅ **Feedback visual** con SnackBars
+- ✅ **Diálogos de confirmación** para acciones críticas
+- ✅ **Estados de carga** con CircularProgressIndicator
+
+### 🔧 Tecnologías Utilizadas - Taller 3
+
+| Tecnología | Versión | Propósito |
+|------------|---------|-----------|
+| **firebase_core** | ^3.6.0 | Core de Firebase |
+| **firebase_database** | ^11.1.4 | Realtime Database |
+| **url_launcher** | ^6.3.1 | Llamadas y URLs |
+| **go_router** | ^16.2.1 | Navegación |
+
+---
+
+## 🔐 TALLER 2: Autenticación JWT
+
+### 🎯 Características Principales
+
+#### 1. **Autenticación JWT Completa**
+- ✅ Registro de usuarios mediante API REST
+- ✅ Login con credenciales que retorna token JWT
+- ✅ Logout con limpieza de datos
+- ✅ Validación de formularios en tiempo real
+- ✅ Manejo de excepciones por código HTTP
+
+#### 2. **Gestión de Estado con Provider**
+- ✅ `ChangeNotifier` para estado reactivo
+- ✅ Estados: idle, loading, success, error
+- ✅ Notificaciones automáticas a la UI
+
+#### 3. **Almacenamiento Local Seguro**
+- ✅ **SharedPreferences**: Datos no sensibles
+- ✅ **FlutterSecureStorage**: Tokens JWT encriptados
+- ✅ Keychain (iOS) y Keystore (Android)
+
+### 🛠️ Tecnologías Utilizadas - Taller 2
+
+| Tecnología | Versión | Propósito |
+|------------|---------|-----------|
+| **Provider** | ^6.1.5 | Gestión de estado |
+| **HTTP** | ^1.5.0 | Cliente REST API |
+| **SharedPreferences** | ^2.5.3 | Almacenamiento simple |
+| **FlutterSecureStorage** | ^9.2.4 | Almacenamiento encriptado |
+
+---
+
+## 📋 Estructura General del Proyecto
+## 📋 Estructura General del Proyecto
+
+```
+lib/
+├── config/
+│   └── dev_config.dart                    # Configuración modo desarrollo
+├── models/
+│   ├── parking_user.dart                  # Modelo usuario (JWT)
+│   └── universidad.dart                   # Modelo universidad (Firebase)
+├── services/
+│   ├── parking_auth_service.dart          # Autenticación JWT
+│   ├── universidad_realtime_service.dart  # Firebase Realtime DB
+│   └── universidad_mock_service.dart      # Mock para desarrollo
+├── views/
+│   ├── auth/                              # Vistas de autenticación
+│   │   ├── login_view.dart
+│   │   └── register_view.dart
+│   ├── home/                              # Dashboard y home
+│   │   ├── home_screen.dart
+│   │   └── user_info_view.dart
+│   └── universidades/                     # Módulo Taller 3
+│       ├── universidades_list_view.dart
+│       └── universidad_form_view.dart
+├── widgets/
+│   ├── custom_drawer.dart                 # Menú lateral
+│   └── base_view.dart                     # Widget base
+├── routes/
+│   └── app_router.dart                    # Configuración de rutas
+├── themes/
+│   └── app_theme.dart                     # Tema de la aplicación
+├── firebase_options.dart                  # Configuración Firebase
+└── main.dart                              # Punto de entrada
+```
+
+---
+
+## 🚀 Instalación y Ejecución
 
 ### Prerrequisitos
 ```bash
 flutter --version  # Flutter SDK 3.9.0 o superior
+dart --version     # Dart 3.9.0 o superior
 ```
 
 ### Instalación
 ```bash
-# Clonar el repositorio
-git clone <repository-url>
+# 1. Clonar el repositorio
+git clone https://github.com/camiloMena259/taller2Moviles_2corte.git
 cd taller2Moviles_2corte
 
-# Instalar dependencias
+# 2. Cambiar a la rama del Taller 3
+git checkout feature/taller_firebase_universidades
+
+# 3. Instalar dependencias
 flutter pub get
 
-# Ejecutar la aplicación
+# 4. Ejecutar la aplicación
 flutter run
 ```
 
-### Ejecutar en diferentes plataformas
+### Configuración de Firebase (Taller 3)
+
+Si quieres trabajar con Firebase real (recomendado):
+
 ```bash
-# Chrome
+# 1. Instalar Firebase CLI
+npm install -g firebase-tools
+
+# 2. Login en Firebase
+firebase login
+
+# 3. Instalar FlutterFire CLI
+dart pub global activate flutterfire_cli
+
+# 4. Configurar Firebase en el proyecto
+flutterfire configure
+```
+
+**Nota:** Para el Taller 3 se usa **Realtime Database** que no requiere billing/tarjeta.
+
+---
+
+## 🌳 Gestión de Ramas (GitFlow)
+
+### Ramas Principales
+- `main` - Producción (versión estable)
+- `dev` - Desarrollo (integración de features)
+
+### Ramas de Features
+- `feature/taller_jwt` - Taller 2: Autenticación JWT
+- `feature/taller_firebase_universidades` - Taller 3: Firebase (ACTUAL)
+
+### Flujo de Trabajo
+```bash
+# Crear nueva rama feature desde dev
+git checkout dev
+git pull origin dev
+git checkout -b feature/nombre-del-feature
+
+# Trabajar en la rama
+git add .
+git commit -m "feat: descripción del cambio"
+git push origin feature/nombre-del-feature
+
+# Crear Pull Request: feature → dev
+```
+
+---
+
+## 📱 Ejecución en Diferentes Plataformas
+
+```bash
+# Web (Chrome)
 flutter run -d chrome
 
 # Android Emulator
 flutter run -d emulator-5554
 
-# iOS Simulator
+# iOS Simulator (macOS)
 flutter run -d iPhone
+
+# Listar dispositivos disponibles
+flutter devices
 ```
+
+---
+
+## 🧪 Testing y Depuración
+
+```bash
+# Limpiar proyecto
+flutter clean
+
+# Obtener dependencias
+flutter pub get
+
+# Analizar código
+flutter analyze
+
+# Ver logs en tiempo real
+flutter logs
+
+# Hot Reload (mientras la app está corriendo)
+# Presiona 'r' en la terminal
+
+# Hot Restart
+# Presiona 'R' en la terminal
+```
+
+---
+
+## 📖 Documentación Adicional
+
+| Archivo | Descripción |
+|---------|-------------|
+| [INFORME_TALLER3_FIREBASE.md](./INFORME_TALLER3_FIREBASE.md) | Informe completo del Taller 3 |
+| [TALLER3_FIREBASE.md](./TALLER3_FIREBASE.md) | Documentación técnica del Taller 3 |
+| [GUIA_FIREBASE_PASO_A_PASO.md](./GUIA_FIREBASE_PASO_A_PASO.md) | Guía de configuración de Firebase |
+| [INSTRUCCIONES_FIREBASE.md](./INSTRUCCIONES_FIREBASE.md) | Instrucciones rápidas de setup |
+
+---
+
+## 🎓 Conceptos y Aprendizajes
+
+### Taller 2 (JWT)
+- Autenticación y autorización con JWT
+- Gestión de estado con Provider
+- Almacenamiento seguro en dispositivos móviles
+- Consumo de APIs REST
+- Manejo de errores HTTP
+
+### Taller 3 (Firebase)
+- Integración de Firebase con Flutter
+- Firebase Realtime Database (NoSQL)
+- Operaciones CRUD en tiempo real
+- Streams y programación reactiva
+- Validación de formularios
+- Integración con funcionalidades del dispositivo (llamadas, URLs)
+- Arquitectura limpia y separación de responsabilidades
+
+---
+
+## 🔒 Seguridad
+
+### Datos Sensibles
+- 🔐 Tokens JWT encriptados con FlutterSecureStorage
+- 🔐 Uso de Keychain (iOS) y Keystore (Android)
+- 🔐 Variables de entorno en archivo `.env` (no versionado)
+
+### Datos No Sensibles
+- ✅ Información de usuario en SharedPreferences
+- ✅ Preferencias de la app
+- ✅ Caché de datos públicos
+
+### Firebase Security Rules
+```json
+{
+  "rules": {
+    "universidades": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
+```
+**Nota:** En producción, implementar reglas más restrictivas.
+
+---
+
+## 🐛 Solución de Problemas Comunes
+
+### Error: "No Firebase App has been created"
+**Solución:**
+```bash
+flutterfire configure
+flutter clean
+flutter pub get
+flutter run
+```
+
+### Error: "MissingPluginException"
+**Solución:**
+```bash
+flutter clean
+flutter pub get
+# Reiniciar el dispositivo/emulador
+flutter run
+```
+
+### Error de compilación con imports
+**Solución:**
+```bash
+flutter clean
+flutter pub get
+# Cerrar y reabrir VS Code
+flutter run
+```
+
+### Firebase no sincroniza
+**Verificar:**
+1. Internet está funcionando
+2. Firebase Realtime Database está habilitado en Console
+3. Reglas de seguridad permiten lectura/escritura
+4. `firebase_options.dart` existe y está correcto
+
+---
+
+## 📊 Estado del Proyecto
+
+### Completado ✅
+- ✅ Taller 2: Autenticación JWT
+- ✅ Taller 3: Firebase Realtime Database
+- ✅ Integración con APIs externas
+- ✅ Navegación con GoRouter
+- ✅ Gestión de estado con Provider
+- ✅ Almacenamiento local y seguro
+- ✅ CRUD completo de universidades
+- ✅ Sincronización en tiempo real
+
+### En Desarrollo 🚧
+- 🚧 Tests unitarios
+- 🚧 Tests de integración
+- 🚧 Optimización de rendimiento
+
+---
 
 ## 👨‍💻 Autor
 
-**Camilo Mena**
+**Juan Camilo Mena**
+- Email: juancamilomena2010@gmail.com
 - GitHub: [@camiloMena259](https://github.com/camiloMena259)
+- Universidad: UCEVA
+- Programa: Ingeniería de Sistemas
+
+---
 
 ## 📝 Licencia
 
-Este proyecto fue desarrollado con fines educativos como parte del curso de Desarrollo Móvil.
+Este proyecto fue desarrollado con fines educativos como parte del curso de Desarrollo de Aplicaciones Móviles de UCEVA.
 
 ---
 
 ## 🔗 Enlaces Útiles
 
+### Flutter & Dart
 - [Flutter Documentation](https://docs.flutter.dev/)
-- [Provider Package](https://pub.dev/packages/provider)
-- [GoRouter Package](https://pub.dev/packages/go_router)
+- [Dart Language](https://dart.dev/)
+- [Flutter Packages](https://pub.dev/)
+
+### Firebase
+- [Firebase Documentation](https://firebase.google.com/docs)
+- [FlutterFire](https://firebase.flutter.dev/)
+- [Realtime Database Guide](https://firebase.google.com/docs/database)
+
+### Paquetes Utilizados
+- [Provider](https://pub.dev/packages/provider)
+- [GoRouter](https://pub.dev/packages/go_router)
 - [FlutterSecureStorage](https://pub.dev/packages/flutter_secure_storage)
-- [JWT.io](https://jwt.io/) - Información sobre JSON Web Tokens
+- [URL Launcher](https://pub.dev/packages/url_launcher)
+- [SharedPreferences](https://pub.dev/packages/shared_preferences)
+
+### Otros
+- [JWT.io](https://jwt.io/) - Info sobre JSON Web Tokens
+- [Material Design 3](https://m3.material.io/)
+
+---
+
+## 🙏 Agradecimientos
+
+- UCEVA - Universidad Central del Valle del Cauca
+- Profesor del curso de Desarrollo Móvil
+- Comunidad de Flutter en español
+- Documentación oficial de Flutter y Firebase
+
+---
+
+**Última actualización:** Noviembre 4, 2025  
+**Versión:** 2.0.0 - Taller 3 Firebase Realtime Database
+**Última actualización:** Noviembre 4, 2025  
+**Versión:** 2.0.0 - Taller 3 Firebase Realtime Database

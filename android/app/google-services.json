@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "842086777711",
+    "project_id": "uceva-taller3-universidades",
+    "storage_bucket": "uceva-taller3-universidades.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:842086777711:android:5216b027411e6a70ea9e9a",
+        "android_client_info": {
+          "package_name": "com.example.registro_clases"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1NGDMO9goWw4E-S11Y70-Gm0sXDxpg0o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
