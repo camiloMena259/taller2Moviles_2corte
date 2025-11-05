@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../config/dev_config.dart';
 import '../../services/auth_service.dart';
 import '../../widgets/custom_drawer.dart';
 
@@ -35,20 +36,41 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadData() async {
-    setState(() => isLoading = true);
+    try {
+      setState(() => isLoading = true);
 
-    // Cargar datos de SharedPreferences
-    final prefs = await SharedPreferences.getInstance();
-    userName = prefs.getString('user_name');
-    userEmail = prefs.getString('user_email');
-    userId = prefs.getInt('user_id');
+      // 🚀 Modo desarrollo: usar datos ficticios
+      if (DevConfig.isDevelopmentMode) {
+        userName = DevConfig.devUserName;
+        userEmail = DevConfig.devUserEmail;
+        userId = DevConfig.devUserId;
+        token = DevConfig.devToken;
+        tokenType = 'Bearer';
+        expiresIn = '999999';
+        setState(() => isLoading = false);
+        return;
+      }
 
-    // Cargar datos de FlutterSecureStorage
-    token = await _secureStorage.read(key: 'token');
-    tokenType = await _secureStorage.read(key: 'token_type');
-    expiresIn = await _secureStorage.read(key: 'expires_in');
+      // Cargar datos de SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      userName = prefs.getString('user_name');
+      userEmail = prefs.getString('user_email');
+      userId = prefs.getInt('user_id');
 
-    setState(() => isLoading = false);
+      // Cargar datos de FlutterSecureStorage
+      token = await _secureStorage.read(key: 'token');
+      tokenType = await _secureStorage.read(key: 'token_type');
+      expiresIn = await _secureStorage.read(key: 'expires_in');
+
+      setState(() => isLoading = false);
+    } catch (e) {
+      print('Error cargando datos: $e');
+      // En caso de error, usar datos de desarrollo
+      userName = DevConfig.devUserName;
+      userEmail = DevConfig.devUserEmail;
+      userId = DevConfig.devUserId;
+      setState(() => isLoading = false);
+    }
   }
 
   Future<void> _logout() async {

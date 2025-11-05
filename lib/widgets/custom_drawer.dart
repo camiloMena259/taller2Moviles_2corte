@@ -118,6 +118,16 @@ class CustomDrawer extends StatelessWidget {
               context.go('/establecimientos');
             },
           ),
+          //!UNIVERSIDADES (Taller 3 - Firebase)
+          ListTile(
+            leading: const Icon(Icons.school),
+            title: const Text('Universidades (Firebase)'),
+            subtitle: const Text('Taller 3'),
+            onTap: () {
+              context.go('/universidades');
+              Navigator.pop(context); // Cierra el drawer
+            },
+          ),
           const Divider(),
           //!INFORMACIÓN DE USUARIO (Taller JWT)
           ListTile(
